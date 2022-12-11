@@ -11,8 +11,9 @@ import './change_password';
 import './map';
 import {reset_navbar, load_home_page, reset_form, show_modal, getCookie} from './utils';
 
-window.bootstrap = require('bootstrap/dist/js/bootstrap.bundle.js');
+window.bootstrap = require('bootstrap/dist/js/bootstrap.bundle.js'); // setting for bootstrap
 
+// PWA settings
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker.register('/service-worker.js').then(registration => {
@@ -23,6 +24,7 @@ if ('serviceWorker' in navigator) {
     })
 }
 
+// load when page initial
 $(document).ready(function(){
     reset_navbar();
     load_home_page();

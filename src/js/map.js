@@ -35,7 +35,7 @@ function generate_map() {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(map);
 
-    map.addLayer(new L.TileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'));	//base layer
+    map.addLayer(new L.TileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')); // leaflet-search with nominatim
     map.addControl( new L.Control.Search({
         url: 'https://nominatim.openstreetmap.org/search?format=json&q={s}',
         jsonpParam: 'json_callback',
@@ -51,22 +51,28 @@ function generate_map() {
         .css("padding-top", "6px").css("padding-left", "6px").attr("id", "search_icon").css("color", "black");
     $(".search-button").html(search_icon);
 
+    // get the top left area elements, to swap the display orders
     const top_left_ele = $("[class='leaflet-top leaflet-left']");
     const zoom_btn_area = $("[class='leaflet-control-zoom leaflet-bar leaflet-control']");
     zoom_btn_area.attr("id", "zoom_btn_area");
     const search_btn_area = $("[class='leaflet-control-search leaflet-control']");
     search_btn_area.attr("id", "search_btn_area");
 
+    // create a location button with leaflet-search button style
     const location_btn_area = $("<div></div>").addClass("leaflet-control-search leaflet-control")
         .attr("id", "location_btn_area");
     const location_btn = $("<a></a>").addClass("search-button")
         .attr("href", "#").attr("title", "Find me...").attr("id", "location_btn");
     const location_icon = $("<i></i>").addClass("fa-solid fa-location-crosshairs fa-xl")
         .css("padding-top", "6px").css("padding-left", "6px").attr("id", "location_icon").css("color", "black");
+
+    // swap the display order. Before: zoom -> search -> location, after: zoom -> location -> search
+    // because the location button will cover the search list
     location_btn.html(location_icon);
     location_btn_area.html(location_btn);
     top_left_ele.html("").append(zoom_btn_area).append(location_btn_area).append(search_btn_area);
 
+    // add a search bar at top right, this search use overpass to find amenity
     const region_search_div = $("<div></div>").addClass("leaflet-bar leaflet-control").attr("id", "region_search_div");
     const region_search_btn = $("<button></button>").attr("type", "button").attr("id", "region_search_btn").html("Go");
     const region_search_box = $("<input>").attr("id", "region_search_box").attr("size", 50).attr("placeholder", "Search amenity...");
@@ -75,7 +81,7 @@ function generate_map() {
     $("[class='leaflet-top leaflet-right']").html(region_search_div);
 }
 
-function updateLocation(map) {
+function find_me(map) {
     navigator.geolocation.getCurrentPosition(
         function (pos) {
             setMapToCurrentLocation(map, pos);
@@ -108,7 +114,7 @@ function setMapToCurrentLocation(map, pos) {
 $(document).on("click", "#location_btn", function(){
     my_location = my_location !== true;
     if(my_location) {
-        updateLocation(map);
+        find_me(map);
         $("#location_icon").css("color", "red");
     } else {
         $("#location_icon").css("color", "black");
@@ -116,7 +122,7 @@ $(document).on("click", "#location_btn", function(){
     }
 });
 
-function update_location(pos) {
+function update_location(pos) { // update location to database
     const locString = pos.coords.longitude + "," + pos.coords.latitude;
     $.ajax({
         type: "POST",
@@ -144,7 +150,7 @@ $(document).on("click", "#region_search_btn", function(){
 });
 
 function buildOverpassApiUrl(map, overpassQuery) {
-    const bounds = map.getBounds().getSouth() + ',' + map.getBounds().getWest() + ',' + map.getBounds().getNorth() + ',' + map.getBounds().getEast();
+    const bounds = map.getBounds().getSouth() + ',' + map.getBounds().getWest() + ',' + map.getBounds().getNorth() + ',' + map.getBounds().getEast(); // detect the map region
     const nodeQuery = 'node[' + overpassQuery + '](' + bounds + ');';
     const wayQuery = 'way[' + overpassQuery + '](' + bounds + ');';
     const relationQuery = 'relation[' + overpassQuery + '](' + bounds + ');';
@@ -170,23 +176,13 @@ function do_overpass_search(amenity_type) {
                     feature.geometry.coordinates = [polygonCenter.lat, polygonCenter.lng];
                 }
                 return true;
-            },
-            onEachFeature: function (feature, layer) {
-                let popupContent = "";
-                popupContent = popupContent + "<dt>@id</dt><dd>" + feature.properties.type + "/" + feature.properties.id + "</dd>";
-                const keys = Object.keys(feature.properties.tags);
-                keys.forEach(function (key) {
-                    popupContent = popupContent + "<dt>" + key + "</dt><dd>" + feature.properties.tags[key] + "</dd>";
-                });
-                popupContent = popupContent + "</dl>"
-                layer.bindPopup(popupContent);
             }
         }).addTo(map);
-        result_layers.push(resultLayer);
+        result_layers.push(resultLayer); // add the search result layer to layer array
     });
 }
 
-$(document).on("click", "#region_search_rm", function(){
+$(document).on("click", "#region_search_rm", function(){ // remove all the search result by overpass
     $("#region_search_box").val("");
     for(let i = 0; i < result_layers.length; i++) {
         map.removeLayer(result_layers[i]);

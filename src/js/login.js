@@ -18,15 +18,15 @@ function do_login() {
                 password: password
             },
             success: function(result) {
-                setUserCookie(username, result.firstname, result.lastname, result.email);
-                window.localStorage.setItem('token', result.token);
+                setUserCookie(username, result.firstname, result.lastname, result.email); // store user info in cookie
+                window.localStorage.setItem('token', result.token); // store token in localStorage
                 close_modal("login_modal");
                 reset_navbar();
-                load_home_page();
+                load_home_page(); // refresh home page
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 const response_code = jqXHR.status;
-                if(response_code === 400 || response_code === 401) {
+                if(response_code === 400 || response_code === 401) { // password incorrect, or user not exist (another way of password incorrect)
                     show_validate_msg("#login_password", "error", "Password incorrect");
                 } else if(response_code === 500) {
                     console.log(jqXHR.status + " " + textStatus + " " + errorThrown + ": " + jqXHR.responseText);

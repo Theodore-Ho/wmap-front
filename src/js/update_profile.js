@@ -23,7 +23,7 @@ function do_update() {
             },
             success: function() {
                 close_modal("update_profile_modal");
-                setUserCookie(getCookie("username"), firstname, lastname, email);
+                setUserCookie(getCookie("username"), firstname, lastname, email); // store user new info in cookie
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 const response_code = jqXHR.status;

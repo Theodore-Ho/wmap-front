@@ -28,36 +28,36 @@ function reset_navbar() {
     }
 }
 
-function reset_active() {
+function reset_active() { // reset the active status in navbar
     $("#nav_home_btn").removeClass("active");
     $("#nav_map_btn").removeClass("active");
 }
 
 function reset_form(element) {
-    $(element)[0].reset();
-    $(element).find(".form-control").attr("value", "");
-    $(element).find(".form-control").removeClass("is-valid is-invalid");
-    $(element).find(".modal-feedback").text("");
+    $(element)[0].reset(); // remove all input
+    $(element).find(".form-control").attr("value", ""); // remove all value
+    $(element).find(".form-control").removeClass("is-valid is-invalid"); // remove validate status
+    $(element).find(".modal-feedback").text(""); // remove validate msg
 }
 
 function valid_login() {
     return !!window.localStorage.getItem("token");
 }
 
-function show_modal(modal_name) {
+function show_modal(modal_name) { // show modal using js
     const modal = new bootstrap.Modal(document.getElementById(modal_name), {});
     modal.show();
 }
 
-function close_modal(modal_name) {
+function close_modal(modal_name) { // close modal using js
     const modal = bootstrap.Modal.getInstance(document.getElementById(modal_name))
     modal.hide();
     $(".modal-backdrop.show").remove();
 }
 
-function show_validate_msg(element, status, msg) {
-    $(element).removeClass("is-valid is-invalid");
-    $(element).next("div").removeClass("invalid-feedback").text("");
+function show_validate_msg(element, status, msg) { // show validate msg in modal
+    $(element).removeClass("is-valid is-invalid"); // remove validate status from the previous try
+    $(element).next("div").removeClass("invalid-feedback").text(""); // remove validate msg from the previous try
     if("success" === status){
         $(element).addClass("is-valid");
         $(element).next("div").text("");
@@ -87,4 +87,4 @@ function getCookie(cName) {
 
 const host = "http://127.0.0.1:8000";
 
-export {load_home_page, reset_navbar, reset_active, reset_form, valid_login, show_modal, close_modal, show_validate_msg, setUserCookie, getCookie, host};
+export {load_home_page, reset_navbar, reset_active, reset_form, show_modal, close_modal, show_validate_msg, setUserCookie, getCookie, host};

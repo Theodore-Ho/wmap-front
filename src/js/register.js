@@ -21,8 +21,8 @@ function do_register() {
             success: function() {
                 close_modal("signup_modal");
                 reset_form("#login_modal form");
-                $("#login_username").attr("value", username);
-                $("#login_password").attr("value", password);
+                $("#login_username").attr("value", username); // echo the username in login panel
+                $("#login_password").attr("value", password); // echo the password in login panel
                 show_modal("login_modal");
             },
             error: function (jqXHR, textStatus, errorThrown) {

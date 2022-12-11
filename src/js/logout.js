@@ -18,7 +18,7 @@ function do_logout() {
             reset_navbar();
             load_home_page();
         },
-        error: function(jqXHR, textStatus, errorThrown) {
+        error: function(jqXHR, textStatus, errorThrown) { // logout with error in console log
             console.log(jqXHR.status + " " + textStatus + " " + errorThrown + ": " + jqXHR.responseText);
             localStorage.removeItem("token");
             close_modal("logout_modal");
