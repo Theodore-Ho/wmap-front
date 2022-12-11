@@ -1,6 +1,8 @@
 const { resolve } = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const FaviconsWebpackPlugin = require('favicons-webpack-plugin')
+const WorkboxPlugin = require('workbox-webpack-plugin')
+const AppManifestPlugin = require('webpack-web-app-manifest-plugin')
 
 module.exports = {
     entry: {
@@ -14,6 +16,11 @@ module.exports = {
     module: {
         rules: [
             {
+                test: /\.js$/,
+                enforce: "pre",
+                use: ["source-map-loader"],
+            },
+            {
                 test: /\.css$/i,
                 use: [
                     // 2. style tag add the js style in html head
@@ -23,7 +30,7 @@ module.exports = {
                 ]
             },
             {
-                test: /\.png$/,
+                test: /\.(png|jpe?g|gif)$/,
                 use: [
                     'file-loader'
                 ]
@@ -36,10 +43,18 @@ module.exports = {
         new HtmlWebpackPlugin({
             template: './src/index.html'
         }),
-        new FaviconsWebpackPlugin('./src/images/favicon.ico')
+        new FaviconsWebpackPlugin({
+            logo: './src/images/favicon.ico',
+            cache: true
+        }),
+        new WorkboxPlugin.GenerateSW({
+            clientsClaim: true,
+            skipWaiting: true,
+            maximumFileSizeToCacheInBytes: 4194304
+        })
     ],
     mode: 'development',
-    // mode: 'production'
+    // mode: 'production',
 
     // devServer
     // npx webpack-dev-server

@@ -13,6 +13,16 @@ import {reset_navbar, load_home_page, reset_form, show_modal, getCookie} from '.
 
 window.bootstrap = require('bootstrap/dist/js/bootstrap.bundle.js');
 
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/service-worker.js').then(registration => {
+            console.log('service-worker registered')
+        }).catch(error => {
+            console.log('service-worker register error: ' + error)
+        })
+    })
+}
+
 $(document).ready(function(){
     reset_navbar();
     load_home_page();
