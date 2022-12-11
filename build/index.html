@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>WebMapping</title>
+    <script src="https://unpkg.com/osmtogeojson@2.2.12/osmtogeojson.js"></script>
+<link rel="icon" href="assets/favicon.ico"><script defer src="js/built.js"></script></head>
+<body>
+<div id="wrap">
+    <div id="main">
+        <div id="header">
+            <nav class="navbar navbar-expand-lg bg-light">
+                <div class="container-fluid">
+                    <a class="navbar-brand" id="nav_logo" href="#">WebMapping</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav me-auto">
+                            <li class="nav-item" id="nav_home">
+                                <a class="nav-link" id="nav_home_btn" aria-current="page" href="#">Home</a>
+                            </li>
+                            <li class="nav-item" id="nav_map">
+                                <a class="nav-link" id="nav_map_btn" href="#">Map</a>
+                            </li>
+                        </ul>
+                        <ul class="navbar-nav ms-auto">
+                            <li class="nav-item dropdown" id="nav_profile">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" id="nav_profile_btn">
+                                    Profile
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="#" id="update_profile_btn">Update Profile</a></li>
+                                    <li><a class="dropdown-item" href="#" id="change_password_btn">Change Password</a></li>
+                                </ul>
+                            </li>
+                            <li class="nav-item" id="nav_login">
+                                <a class="nav-link" id="nav_login_btn" href="#">Login</a>
+                            </li>
+                            <li class="nav-item" id="nav_logout">
+                                <a class="nav-link" id="nav_logout_btn" href="#">Logout</a>
+                            </li>
+                            <li class="nav-item" id="nav_signup">
+                                <a class="nav-link" id="nav_signup_btn" href="#">Sign Up</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </div>
+        <div class="container" id="container">
+            <div id="content"></div>
+        </div>
+    </div>
+</div>
+<div id="footer">
+    <span>&copy; MIT license</span> &#124;
+    <a href='https://github.com/Theodore-Ho/geodjango'>GitHub</a> &#124;
+    <a href='mailto:he@yuhong.me'>he@yuhong.me</a>
+</div>
+
+<!--Sign up modal-->
+<div class="modal fade" id="signup_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5">Sign Up</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="register_username" placeholder="example">
+                        <div class="modal-feedback"></div>
+                        <label for="register_username">Username</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="password" class="form-control" id="register_password" placeholder="example">
+                        <div class="modal-feedback"></div>
+                        <label for="register_password">Password</label>
+                    </div>
+                    <div class="form-floating">
+                        <input type="password" class="form-control" id="register_password_confirmation" placeholder="example">
+                        <div class="modal-feedback"></div>
+                        <label for="register_password_confirmation">Password Confirmation</label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="register_btn">Register</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Login modal-->
+<div class="modal fade" id="login_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5">Login</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="login_username" placeholder="example">
+                        <div class="modal-feedback"></div>
+                        <label for="login_username">Username</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="password" class="form-control" id="login_password" placeholder="example">
+                        <div class="modal-feedback"></div>
+                        <label for="login_password">Password</label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="login_btn">Login</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Logout modal-->
+<div class="modal fade" id="logout_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5">Logout</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger" id="confirm_logout">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Update Profile modal-->
+<div class="modal fade" id="update_profile_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5">Update Profile</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="first_name" placeholder="example">
+                        <label for="first_name">First name</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="last_name" placeholder="example">
+                        <label for="last_name">Last name</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="update_email" placeholder="example">
+                        <div class="modal-feedback"></div>
+                        <label for="update_email">Email</label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="confirm_update_profile">Update</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Change password modal-->
+<div class="modal fade" id="change_password_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5">Change Password</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-floating mb-3">
+                        <input type="password" class="form-control" id="origin_password" placeholder="example">
+                        <div class="modal-feedback"></div>
+                        <label for="origin_password">Old Password</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="password" class="form-control" id="new_password" placeholder="example">
+                        <div class="modal-feedback"></div>
+                        <label for="new_password">New Password</label>
+                    </div>
+                    <div class="form-floating">
+                        <input type="password" class="form-control" id="new_password_confirmation" placeholder="example">
+                        <div class="modal-feedback"></div>
+                        <label for="new_password_confirmation">New Password Confirmation</label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="confirm_change_password">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

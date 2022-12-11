@@ -1,0 +1,30 @@
+html, body {
+  height: 100%;
+}
+#wrap {
+  min-height: 100%;
+}
+#main {
+  overflow:auto;
+  padding-bottom:40px;
+}
+#content {
+  padding-top: 20px;
+}
+
+#footer {
+  position: relative;
+  margin-top: -48px;
+  width: 100%;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  color: #014073;
+  font-size: 0.8em;
+  background-color: #f8f8f8;
+  text-align: center;
+  border-top-style: groove;
+}
+#footer a {
+  color: #014073;
+  text-decoration: none;
+}
