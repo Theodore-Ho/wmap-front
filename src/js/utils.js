@@ -85,6 +85,6 @@ function getCookie(cName) {
     return "";
 }
 
-const host = "http://127.0.0.1:8000";
+const host = "https://www.yuhong.online";
 
 export {load_home_page, reset_navbar, reset_active, reset_form, show_modal, close_modal, show_validate_msg, setUserCookie, getCookie, host};

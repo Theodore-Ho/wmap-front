@@ -176,6 +176,16 @@ function do_overpass_search(amenity_type) {
                     feature.geometry.coordinates = [polygonCenter.lat, polygonCenter.lng];
                 }
                 return true;
+            },
+            onEachFeature: function (feature, layer) {
+                let popupContent = "";
+                popupContent = popupContent + "<dt>@id</dt><dd>" + feature.properties.type + "/" + feature.properties.id + "</dd>";
+                const keys = Object.keys(feature.properties.tags);
+                keys.forEach(function (key) {
+                    popupContent = popupContent + "<dt>" + key + "</dt><dd>" + feature.properties.tags[key] + "</dd>";
+                });
+                popupContent = popupContent + "</dl>"
+                layer.bindPopup(popupContent);
             }
         }).addTo(map);
         result_layers.push(resultLayer); // add the search result layer to layer array
